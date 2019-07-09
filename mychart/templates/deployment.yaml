@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployName }}
+  labels:
+    app: {{ .Values.deployName }}
+    version: {{ .Values.imageVersion }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.deployName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployName }}
+        version: {{ .Values.imageVersion }}
+    spec:
+      containers:
+        - name: {{ .Values.deployName }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.deployName }}
